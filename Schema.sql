@@ -8,5 +8,7 @@ USE KRANG;
 -- I MySQL används scheman och databaser synonymt, så du kan hoppa över denna rad om du redan använder rätt databas.
 
 
--- Skapa ett index för att optimera sökningar baserade på användarnamn och e-post
-CREATE INDEX idx_username_email ON users (username, email);
+
+
+SHOW TABLES;
+

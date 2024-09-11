@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS media (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    genre VARCHAR(100),
+    release_date DATE
+);

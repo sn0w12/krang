@@ -9,3 +9,7 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+
+
+-- Skapa ett index för att optimera sökningar baserade på användarnamn och e-post
+CREATE INDEX idx_username_email ON users (username, email);
