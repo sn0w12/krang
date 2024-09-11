@@ -2,13 +2,12 @@ package com.example.krang.services;
 
 import com.example.krang.entities.Playback;
 import com.example.krang.entities.User;
-import com.example.krang.execptions.ResourceNotFoundException;
 import com.example.krang.repository.PlaybackRepository;
-import com.example.krang.repository.UserRepository;
+import com.example.krang.execptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class PlaybackService {
@@ -17,19 +16,28 @@ public class PlaybackService {
     private PlaybackRepository playbackRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
+    // Metod för att spara en uppspelning
     public Playback savePlayback(Long userId, Long mediaId, int duration) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        User user = userService.findById(userId);  // Kontrollera att användaren finns
+        if (mediaId == null || mediaId <= 0 || duration <= 0) {
+            throw new IllegalArgumentException("Invalid mediaId or duration.");
+        }
 
         Playback playback = new Playback();
         playback.setUser(user);
         playback.setMediaId(mediaId);
         playback.setDuration(duration);
-        playback.setPlaybackTime(LocalDateTime.now());
+        playback.setPlaybackTime(java.time.LocalDateTime.now());
 
         return playbackRepository.save(playback);
     }
-}
 
+    // Ny metod för att hämta alla uppspelningar för en användare
+    public List<Playback> getPlaybacksForUser(Long userId) {
+        // Kontrollera att användaren finns
+        User user = userService.findById(userId);
+        return playbackRepository.findByUserId(userId);
+    }
+}

@@ -1,7 +1,7 @@
 package com.example.krang.entities;
 
 import jakarta.persistence.*;
-import org.springframework.data.annotation.Id;
+
 
 import java.time.LocalDateTime;
 
@@ -11,33 +11,24 @@ public class Playback {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id;  // Motsvarar 'id' i tabellen
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private User user;  // Motsvarar 'user_id' i tabellen
 
-    @Column(name = "media_id", nullable = false)
-    private Long mediaId;
-
-    @Column(name = "playback_time", nullable = false)
-    private LocalDateTime playbackTime;
+    // Här antas att 'Media' är en annan entitet. Om det inte finns kan du använda Long.
+    @Column(name = "media_id")
+    private Long mediaId;  // Motsvarar 'media_id' i tabellen
 
     @Column(name = "duration", nullable = false)
-    private int duration;
+    private int duration;  // Motsvarar 'duration' i tabellen
 
-    // Constructors
-    public Playback() {
-    }
+    @Column(name = "playback_time", nullable = false)
+    private LocalDateTime playbackTime;  // Motsvarar 'playback_time' i tabellen
 
-    public Playback(User user, Long mediaId, LocalDateTime playbackTime, int duration) {
-        this.user = user;
-        this.mediaId = mediaId;
-        this.playbackTime = playbackTime;
-        this.duration = duration;
-    }
+    // Getters and setters
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -62,19 +53,19 @@ public class Playback {
         this.mediaId = mediaId;
     }
 
-    public LocalDateTime getPlaybackTime() {
-        return playbackTime;
-    }
-
-    public void setPlaybackTime(LocalDateTime playbackTime) {
-        this.playbackTime = playbackTime;
-    }
-
     public int getDuration() {
         return duration;
     }
 
     public void setDuration(int duration) {
         this.duration = duration;
+    }
+
+    public LocalDateTime getPlaybackTime() {
+        return playbackTime;
+    }
+
+    public void setPlaybackTime(LocalDateTime playbackTime) {
+        this.playbackTime = playbackTime;
     }
 }

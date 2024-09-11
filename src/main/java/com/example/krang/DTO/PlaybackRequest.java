@@ -5,7 +5,8 @@ public class PlaybackRequest {
     private Long mediaId;
     private int duration;
 
-    // Getters
+    // Getters and Setters
+
     public Long getUserId() {
         return userId;
     }

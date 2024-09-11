@@ -4,7 +4,6 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<!-- Parent configuration for Spring Boot -->
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
@@ -23,6 +22,12 @@
 	</properties>
 
 	<dependencies>
+		<!-- Spring Boot starter for core functionality -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+		</dependency>
+
 		<!-- Spring Data JPA -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -35,6 +40,12 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
+		<!-- Spring Security for password encoding -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+
 		<!-- MySQL Connector -->
 		<dependency>
 			<groupId>com.mysql</groupId>
@@ -42,13 +53,7 @@
 			<scope>runtime</scope>
 		</dependency>
 
-		<!-- Spring Security for password encoding -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency>
-
-		<!-- Testing dependencies -->
+		<!-- Spring Boot Test Starter -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -61,19 +66,16 @@
 			</exclusions>
 		</dependency>
 
-		<!-- JUnit 5 (Jupiter) -->
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-api</artifactId>
-			<version>5.8.1</version>
-			<scope>test</scope>
-		</dependency>
-
-		<!-- Spring Security Crypto -->
+		<!-- Password encoder -->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-crypto</artifactId>
 			<version>6.3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
@@ -85,5 +87,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>
