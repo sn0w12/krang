@@ -27,15 +27,12 @@ public class Album {
     public int getReleaseYear() {
         return releaseYear;
     }
-
     public void setReleaseYear(int releaseYear) {
         this.releaseYear = releaseYear;
     }
-
     public void setId(Long id) {
         this.id = id;
     }
-
     public Long getId() {
         return id;
     }

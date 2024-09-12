@@ -1,7 +1,7 @@
 package com.example.krang.services;
 
 import com.example.krang.entities.User;
-import com.example.krang.execptions.UserAlreadyExistsException;
+import com.example.krang.exceptions.UserAlreadyExistsException;
 import com.example.krang.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
