@@ -1,4 +1,4 @@
-package com.example.krang.execptions;
+package com.example.krang.exeptions;
 
 
 

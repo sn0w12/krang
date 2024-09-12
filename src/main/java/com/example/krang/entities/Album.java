@@ -8,6 +8,9 @@ public class Album {
 
     private String title;
     private int releaseYear;
+
+    // will later add artist to the fields
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
