@@ -2,18 +2,21 @@ package com.example.krang.entities;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "album", schema = "KRANG")
 public class Album {
-
     private String title;
     private int releaseYear;
-
-    // will later add artist to the fields
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @OneToMany
+    @OrderColumn(name = "media_order")
+    private List<Media> mediaList;
 
     @Column(unique = true, nullable = false, length = 50)
     public String getTitle() {
@@ -35,5 +38,11 @@ public class Album {
     }
     public Long getId() {
         return id;
+    }
+    public List<Media> getMediaList(){
+        return mediaList;
+    }
+    public void setMediaList(List<Media>mediaList){
+        this.mediaList = mediaList;
     }
 }
