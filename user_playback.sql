@@ -7,3 +7,5 @@ CREATE TABLE IF NOT EXISTS user_playbacks (
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (media_id) REFERENCES media(id) -- assuming media table exists
 );
+
+

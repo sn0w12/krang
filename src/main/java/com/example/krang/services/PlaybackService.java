@@ -34,10 +34,21 @@ public class PlaybackService {
         return playbackRepository.save(playback);
     }
 
-    // Ny metod för att hämta alla uppspelningar för en användare
+    // Metod för att hämta alla uppspelningar för en användare
     public List<Playback> getPlaybacksForUser(Long userId) {
         // Kontrollera att användaren finns
         User user = userService.findById(userId);
         return playbackRepository.findByUserId(userId);
+    }
+
+    // Ny metod för att hämta mest spelade media för en användare
+    public List<Object[]> getMostPlayedMediaForUser(Long userId) {
+        // Kontrollera att användaren finns
+        User user = userService.findById(userId);
+        if (user == null) {
+            throw new ResourceNotFoundException("User not found with id: " + userId);
+        }
+
+        return playbackRepository.findMostPlayedMediaByUser(userId);
     }
 }

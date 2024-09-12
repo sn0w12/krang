@@ -24,10 +24,17 @@ public class PlaybackController {
         return new ResponseEntity<>(playback, HttpStatus.CREATED);
     }
 
-    // Ny endpoint för att hämta alla uppspelningar för en användare
+    // Endpoint för att hämta alla uppspelningar för en användare
     @GetMapping("/{userId}")
     public ResponseEntity<List<Playback>> getPlaybacksForUser(@PathVariable Long userId) {
         List<Playback> playbacks = playbackService.getPlaybacksForUser(userId);
         return new ResponseEntity<>(playbacks, HttpStatus.OK);
+    }
+
+    // Ny endpoint för att hämta mest spelade media för en användare
+    @GetMapping("/most-played/{userId}")
+    public ResponseEntity<List<Object[]>> getMostPlayedMedia(@PathVariable Long userId) {
+        List<Object[]> mostPlayedMedia = playbackService.getMostPlayedMediaForUser(userId);
+        return new ResponseEntity<>(mostPlayedMedia, HttpStatus.OK);
     }
 }

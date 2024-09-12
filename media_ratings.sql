@@ -6,3 +6,6 @@ CREATE TABLE IF NOT EXISTS media_ratings (
     FOREIGN KEY (user_id) REFERENCES users(id),
     UNIQUE KEY unique_user_media (user_id, media_id) -- Förhindra dubbla betyg på samma media
 );
+
+
+SELECT * FROM media_ratings;
