@@ -1,8 +1,8 @@
 package com.example.krang.services;
 
 import com.example.krang.entities.User;
-import com.example.krang.execptions.UserAlreadyExistsException;
-import com.example.krang.execptions.ResourceNotFoundException;
+import com.example.krang.exceptions.ResourceNotFoundException;
+import com.example.krang.exceptions.UserAlreadyExistsException;
 import com.example.krang.repository.UserRepository;
 import com.example.krang.services.UserService;
 import org.junit.jupiter.api.Test;

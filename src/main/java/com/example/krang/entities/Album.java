@@ -18,6 +18,10 @@ public class Album {
     @OrderColumn(name = "media_order")
     private List<Media> mediaList;
 
+    @ManyToOne
+    @JoinColumn(name = "artist_id")
+    private Artist artist;
+
     @Column(unique = true, nullable = false, length = 50)
     public String getTitle() {
         return title;
@@ -44,5 +48,8 @@ public class Album {
     }
     public void setMediaList(List<Media>mediaList){
         this.mediaList = mediaList;
+    }
+    public void  setArtist(Artist artist){
+        this.artist = artist;
     }
 }
