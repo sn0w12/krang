@@ -1,5 +1,5 @@
-package com.example.krang.exceptions;
 
+package com.example.krang.exceptions;
 
 
 public class UserAlreadyExistsException extends RuntimeException {
