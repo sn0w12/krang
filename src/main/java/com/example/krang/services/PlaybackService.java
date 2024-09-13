@@ -2,8 +2,8 @@ package com.example.krang.services;
 
 import com.example.krang.entities.Playback;
 import com.example.krang.entities.User;
+import com.example.krang.exceptions.ResourceNotFoundException;
 import com.example.krang.repository.PlaybackRepository;
-import com.example.krang.execptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
