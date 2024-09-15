@@ -11,7 +11,6 @@ public class Album {
 
     // will later add artist to the fields
 
-    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
