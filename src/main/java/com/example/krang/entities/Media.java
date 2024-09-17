@@ -12,6 +12,9 @@ public class Media {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
+    private String name;
+
     @ElementCollection
     @CollectionTable(name = "media_genres", joinColumns = @JoinColumn(name = "media_id"))
     @Column(name = "genre")
@@ -23,18 +26,18 @@ public class Media {
     // @ManyToMany
     // @JoinTable(name = "media_artists", joinColumns = @JoinColumn(name =
     // "media_id"), inverseJoinColumns = @JoinColumn(name = "artist_id"))
-    // private List<Artist> artists;
+    // private List<String> artists;
 
     @Temporal(TemporalType.DATE)
     @Column(nullable = false)
     private Date releaseDate;
 
-    @ManyToOne
-    @JoinColumn(name = "album_id")
-    private Album album;
+    // @ManyToOne
+    // @JoinColumn(name = "album_id")
+    // private Album album;
 
     @Column(nullable = false)
-    private String streamingUrl;
+    private String url;
 
     // Getters and Setters
     public Long getId() {
@@ -43,6 +46,14 @@ public class Media {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public List<String> getGenres() {
@@ -79,19 +90,19 @@ public class Media {
         this.releaseDate = releaseDate;
     }
 
-    public Album getAlbum() {
-        return album;
+    // public Album getAlbum() {
+    // return album;
+    // }
+
+    // public void setAlbum(Album album) {
+    // this.album = album;
+    // }
+
+    public String getUrl() {
+        return url;
     }
 
-    public void setAlbum(Album album) {
-        this.album = album;
-    }
-
-    public String getStreamingUrl() {
-        return streamingUrl;
-    }
-
-    public void setStreamingUrl(String streamingUrl) {
-        this.streamingUrl = streamingUrl;
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

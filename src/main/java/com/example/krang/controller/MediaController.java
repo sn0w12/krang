@@ -21,6 +21,12 @@ public class MediaController {
     @Autowired
     private MediaService mediaService;
 
+    @GetMapping
+    public ResponseEntity<List<Media>> getAllMedia() {
+        List<Media> mediaList = mediaService.getAllMedia();
+        return new ResponseEntity<>(mediaList, HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<Media> createMedia(@RequestBody Media media) {
         Media createdMedia = mediaService.createMedia(media);
@@ -30,6 +36,12 @@ public class MediaController {
     @GetMapping("/type/{mediaType}")
     public ResponseEntity<List<Media>> getMediaByType(@PathVariable String mediaType) {
         List<Media> mediaList = mediaService.getMediaByType(mediaType);
+        return new ResponseEntity<>(mediaList, HttpStatus.OK);
+    }
+
+    @GetMapping("/artist/{artistName}")
+    public ResponseEntity<List<Media>> getMediaByArtist(@PathVariable String artistName) {
+        List<Media> mediaList = mediaService.getMediaByArtist(artistName);
         return new ResponseEntity<>(mediaList, HttpStatus.OK);
     }
 }

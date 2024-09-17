@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface MediaRepository extends JpaRepository<Media, Long> {
     List<Media> findByMediaType(String mediaType);
+
+    //List<Media> findByArtistName(String artistName);
 }
