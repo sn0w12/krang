@@ -33,9 +33,6 @@ public class Media {
     @JoinColumn(name = "album_id")
     private Album album;
 
-    @Column
-    private Integer trackOrder;
-
     @Column(nullable = false)
     private String streamingUrl;
 
@@ -88,14 +85,6 @@ public class Media {
 
     public void setAlbum(Album album) {
         this.album = album;
-    }
-
-    public Integer getTrackOrder() {
-        return trackOrder;
-    }
-
-    public void setTrackOrder(Integer trackOrder) {
-        this.trackOrder = trackOrder;
     }
 
     public String getStreamingUrl() {
