@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PlaybackService {
@@ -37,18 +38,19 @@ public class PlaybackService {
     // Metod för att hämta alla uppspelningar för en användare
     public List<Playback> getPlaybacksForUser(Long userId) {
         // Kontrollera att användaren finns
-        User user = userService.findById(userId);
+        userService.findById(userId);
         return playbackRepository.findByUserId(userId);
     }
 
-    // Ny metod för att hämta mest spelade media för en användare
+    // Metod för att hämta mest spelade media för en användare
     public List<Object[]> getMostPlayedMediaForUser(Long userId) {
         // Kontrollera att användaren finns
-        User user = userService.findById(userId);
-        if (user == null) {
-            throw new ResourceNotFoundException("User not found with id: " + userId);
-        }
-
+        userService.findById(userId);
         return playbackRepository.findMostPlayedMediaByUser(userId);
+    }
+
+    // Ny metod för att hämta uppspelning baserat på ID
+    public Optional<Playback> getPlaybackById(Long playbackId) {
+        return playbackRepository.findById(playbackId);
     }
 }

@@ -11,4 +11,5 @@ public interface MediaRepository extends JpaRepository<Media, Long> {
     List<Media> findByGenreInAndIdNotIn(List<String> genre, List<Long> excludedIds);
     List<Media> findByIdNotIn(List<Long> excludedIds);
     List<Media> findByMediaType(String mediaType);
+    List<Media> findByArtist(String artistName);
 }
