@@ -1,36 +1,58 @@
 package com.example.krang.entities;
 
-
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-
+import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "artist", schema = "KRANG")
 public class Artist {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "artist", cascade = CascadeType.ALL) // an artist can have many albums
+    @Column(nullable = false)
+    private String name;
+
+    // En artist kan ha många album
+    @OneToMany(mappedBy = "artist", cascade = CascadeType.ALL)
     private List<Album> albums = new ArrayList<>();
 
-    @OneToMany(mappedBy = "artist", cascade = CascadeType.ALL) // an artist may have different media
+    // En artist kan ha många mediaobjekt
+    @OneToMany(mappedBy = "artist", cascade = CascadeType.ALL)
     private List<Media> mediaItems = new ArrayList<>();
+
+    // Getters och Setters
+    public Long getId() {
+        return id;
+    }
 
     public void setId(Long id) {
         this.id = id;
     }
-    public Long getId() {
-        return id;
+
+    public String getName() {
+        return name;
     }
-    public List<Album> getAlbums(){
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<Album> getAlbums() {
         return albums;
     }
-    public void setAlbum(List<Album> albums){
+
+    public void setAlbums(List<Album> albums) {
         this.albums = albums;
+    }
+
+    public List<Media> getMediaItems() {
+        return mediaItems;
+    }
+
+    public void setMediaItems(List<Media> mediaItems) {
+        this.mediaItems = mediaItems;
     }
 }

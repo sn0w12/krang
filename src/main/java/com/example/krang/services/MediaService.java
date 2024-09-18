@@ -25,11 +25,11 @@ public class MediaService {
 
     public Media createMedia(Media media) {
 
-          Long albumId = media.getAlbum().getId();
-          Album album = albumRepository.findById(albumId)
-          .orElseThrow(() -> new IllegalArgumentException("Invalid album ID: " +
-          albumId));
-          media.setAlbum(album);
+         Long albumId = media.getAlbum().getId();
+         Album album = albumRepository.findById(albumId)
+         .orElseThrow(() -> new IllegalArgumentException("Invalid album ID: " +
+         albumId));
+         media.setAlbum(album);
 
         return mediaRepository.save(media);
     }

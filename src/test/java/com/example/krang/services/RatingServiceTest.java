@@ -2,43 +2,79 @@ package com.example.krang.services;
 
 import com.example.krang.entities.Rating;
 import com.example.krang.entities.User;
+import com.example.krang.entities.Media;
 import com.example.krang.repository.RatingRepository;
+import com.example.krang.exceptions.ResourceNotFoundException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
-@SpringBootTest
 public class RatingServiceTest {
 
-    @Autowired
+    @InjectMocks
     private RatingService ratingService;
 
-    @MockBean
+    @Mock
     private RatingRepository ratingRepository;
 
-    @MockBean
+    @Mock
     private UserService userService;
 
-    @Test
-    public void testRateMedia_ThumbsUp() {
-        User user = new User();
+    @Mock
+    private MediaService mediaService;
+
+    private User user;
+    private Media media;
+    private Rating rating;
+
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+
+        user = new User();
         user.setId(1L);
-        Mockito.when(userService.findById(1L)).thenReturn(user);
+        user.setUsername("TestUser");
 
-        Rating rating = new Rating();
+        media = new Media();
+        media.setId(100L);
+        media.setTitle("Test Media");
+
+        rating = new Rating();
         rating.setUser(user);
-        rating.setMediaId(100L);
+        rating.setMedia(media);
         rating.setThumbsUp(true);
+    }
 
-        Mockito.when(ratingRepository.save(any(Rating.class))).thenReturn(rating);
+    @Test
+    public void testRateMedia_NewRating() {
+        when(userService.findById(1L)).thenReturn(user);
+        when(ratingRepository.findByUserIdAndMediaId(1L, 100L)).thenReturn(Optional.empty());
+        when(ratingRepository.save(any(Rating.class))).thenReturn(rating);
 
         Rating result = ratingService.rateMedia(1L, 100L, true);
+
+        assertNotNull(result);
         assertTrue(result.isThumbsUp());
-        assertEquals(1L, result.getUser().getId());
+        verify(ratingRepository, times(1)).save(any(Rating.class));
+    }
+
+    @Test
+    public void testRateMedia_UpdateExistingRating() {
+        when(userService.findById(1L)).thenReturn(user);
+        when(ratingRepository.findByUserIdAndMediaId(1L, 100L)).thenReturn(Optional.of(rating));
+        when(ratingRepository.save(any(Rating.class))).thenReturn(rating);
+
+        Rating result = ratingService.rateMedia(1L, 100L, false);
+
+        assertNotNull(result);
+        assertFalse(result.isThumbsUp());
+        verify(ratingRepository, times(1)).save(any(Rating.class));
     }
 }

@@ -12,39 +12,30 @@ public class Media {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String name;
-
-    @ElementCollection
-    @CollectionTable(name = "media_genres", joinColumns = @JoinColumn(name = "media_id"))
-    @Column(name = "genre")
-    private List<String> genres;
-
-    @Column(nullable = false)
-    private String mediaType;
-
-    @Temporal(TemporalType.DATE)
-    @Column(nullable = false)
+    private String title;
+    private String genre;
+    private String mediaType; // music, pod, video, etc.
+    private String artist;
     private Date releaseDate;
+    private String streamUrl;
 
-    @Column(nullable = false)
-    private String url;
-
-    // Relation till Artist
-    @ManyToMany
-    @JoinTable(
-            name = "media_artists",
-            joinColumns = @JoinColumn(name = "media_id"),
-            inverseJoinColumns = @JoinColumn(name = "artist_id")
-    )
-    private List<Artist> artists;
-
-    // Relation till Album
+    // Relation till Album (Many-to-One)
     @ManyToOne
     @JoinColumn(name = "album_id")
     private Album album;
 
-    // Getters and Setters
+    public Media() {}
+
+    public Media(String title, String genre, String mediaType, String artist, Date releaseDate, String streamUrl) {
+        this.title = title;
+        this.genre = genre;
+        this.mediaType = mediaType;
+        this.artist = artist;
+        this.releaseDate = releaseDate;
+        this.streamUrl = streamUrl;
+    }
+
+    // Getters och Setters
     public Long getId() {
         return id;
     }
@@ -53,20 +44,20 @@ public class Media {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public List<String> getGenres() {
-        return genres;
+    public String getGenre() {
+        return genre;
     }
 
-    public void setGenres(List<String> genres) {
-        this.genres = genres;
+    public void setGenre(String genre) {
+        this.genre = genre;
     }
 
     public String getMediaType() {
@@ -77,6 +68,14 @@ public class Media {
         this.mediaType = mediaType;
     }
 
+    public String getArtist() {
+        return artist;
+    }
+
+    public void setArtist(String artist) {
+        this.artist = artist;
+    }
+
     public Date getReleaseDate() {
         return releaseDate;
     }
@@ -85,20 +84,12 @@ public class Media {
         this.releaseDate = releaseDate;
     }
 
-    public String getUrl() {
-        return url;
+    public String getStreamUrl() {
+        return streamUrl;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public List<Artist> getArtists() {
-        return artists;
-    }
-
-    public void setArtists(List<Artist> artists) {
-        this.artists = artists;
+    public void setStreamUrl(String streamUrl) {
+        this.streamUrl = streamUrl;
     }
 
     public Album getAlbum() {
