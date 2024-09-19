@@ -3,14 +3,16 @@ package com.example.krang.services;
 import com.example.krang.entities.Rating;
 import com.example.krang.entities.User;
 import com.example.krang.entities.Media;
-import com.example.krang.repository.RatingRepository;
 import com.example.krang.exceptions.ResourceNotFoundException;
+import com.example.krang.repository.MediaRepository;
+import com.example.krang.repository.RatingRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,6 +32,11 @@ public class RatingServiceTest {
 
     @Mock
     private MediaService mediaService;
+    @Mock
+    private MediaRepository mediaRepository;
+
+
+
 
     private User user;
     private Media media;
@@ -49,14 +56,14 @@ public class RatingServiceTest {
 
         rating = new Rating();
         rating.setUser(user);
-        rating.setMedia(media);
+        rating.setMedia(media);  // Använd Media istället för mediaId
         rating.setThumbsUp(true);
     }
 
-    // Test för att skapa en ny betygsättning
     @Test
     public void testRateMedia_NewRating() {
         when(userService.findById(1L)).thenReturn(user);
+        when(mediaRepository.findById(100L)).thenReturn(Optional.of(media));// Mocking MediaService
         when(ratingRepository.findByUserIdAndMediaId(1L, 100L)).thenReturn(Optional.empty());
         when(ratingRepository.save(any(Rating.class))).thenReturn(rating);
 
@@ -67,10 +74,10 @@ public class RatingServiceTest {
         verify(ratingRepository, times(1)).save(any(Rating.class));
     }
 
-    // Test för att uppdatera en befintlig betygsättning
     @Test
     public void testRateMedia_UpdateExistingRating() {
         when(userService.findById(1L)).thenReturn(user);
+        when(mediaRepository.findById(100L)).thenReturn(Optional.of(media));  // Mocking MediaService
         when(ratingRepository.findByUserIdAndMediaId(1L, 100L)).thenReturn(Optional.of(rating));
         when(ratingRepository.save(any(Rating.class))).thenReturn(rating);
 
@@ -81,11 +88,12 @@ public class RatingServiceTest {
         verify(ratingRepository, times(1)).save(any(Rating.class));
     }
 
-    // Test för att hämta alla betyg
     @Test
     public void testGetAllRatings() {
-        List<Rating> ratings = List.of(rating);
-        when(ratingRepository.findAll()).thenReturn(ratings);
+        List<Rating> ratingList = new ArrayList<>();
+        ratingList.add(rating);
+
+        when(ratingRepository.findAll()).thenReturn(ratingList);
 
         List<Rating> result = ratingService.getAllRatings();
 
@@ -94,8 +102,6 @@ public class RatingServiceTest {
         assertEquals(rating, result.get(0));
         verify(ratingRepository, times(1)).findAll();
     }
-
-    // Test för att hantera när betyg inte hittas
     @Test
     public void testUpdateRating_RatingNotFound() {
         when(ratingRepository.findByUserIdAndMediaId(1L, 100L)).thenReturn(Optional.empty());
@@ -106,10 +112,29 @@ public class RatingServiceTest {
 
         verify(ratingRepository, never()).save(any(Rating.class));
     }
-
-    // Test för att uppdatera en befintlig betygsättning framgångsrikt
     @Test
-    public void testUpdateRating_Success() {
+    public void testGetAllRatings_EmptyList() {
+        when(ratingRepository.findAll()).thenReturn(new ArrayList<>());
+
+        List<Rating> result = ratingService.getAllRatings();
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+        verify(ratingRepository, times(1)).findAll();
+    }
+
+    @Test
+    public void testRateMedia_UserNotFound() {
+        when(userService.findById(1L)).thenThrow(new ResourceNotFoundException("User not found"));
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+            ratingService.rateMedia(1L, 100L, true);
+        });
+
+        verify(ratingRepository, never()).save(any(Rating.class));
+    }
+    @Test
+    public void testUpdateRating_RatingFound() {
         when(ratingRepository.findByUserIdAndMediaId(1L, 100L)).thenReturn(Optional.of(rating));
         when(ratingRepository.save(any(Rating.class))).thenReturn(rating);
 
@@ -120,22 +145,5 @@ public class RatingServiceTest {
         verify(ratingRepository, times(1)).save(any(Rating.class));
     }
 
-    @Test
-    public void testRateMedia_InvalidUserId() {
-        when(userService.findById(999L)).thenThrow(new ResourceNotFoundException("User not found"));
-        assertThrows(ResourceNotFoundException.class, () -> {
-            ratingService.rateMedia(999L, 100L, true);
-        });
-    }
-
-    @Test
-    public void testUpdateRating() {
-        when(userService.findById(1L)).thenReturn(user);
-        when(ratingRepository.findByUserIdAndMediaId(1L, 100L)).thenReturn(Optional.of(rating));
-
-        Rating result = ratingService.rateMedia(1L, 100L, false);
-        assertFalse(result.isThumbsUp());
-        verify(ratingRepository, times(1)).save(any(Rating.class));
-    }
 
 }

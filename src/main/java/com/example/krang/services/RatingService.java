@@ -1,16 +1,16 @@
 package com.example.krang.services;
 
-import com.example.krang.entities.Media;
 import com.example.krang.entities.Rating;
 import com.example.krang.entities.User;
+import com.example.krang.entities.Media;
 import com.example.krang.exceptions.ResourceNotFoundException;
-import com.example.krang.repository.MediaRepository;
 import com.example.krang.repository.RatingRepository;
+import com.example.krang.repository.MediaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RatingService {
@@ -36,8 +36,6 @@ public class RatingService {
     // Skapa eller uppdatera betyg
     public Rating rateMedia(Long userId, Long mediaId, boolean thumbsUp) {
         User user = userService.findById(userId);
-
-        // Hämta Media från MediaRepository
         Media media = mediaRepository.findById(mediaId)
                 .orElseThrow(() -> new ResourceNotFoundException("Media not found with id: " + mediaId));
 
@@ -53,7 +51,7 @@ public class RatingService {
             // Skapa en ny betygsättning
             rating = new Rating();
             rating.setUser(user);
-            rating.setMedia(media);  // Använd setMedia istället för setMediaId
+            rating.setMedia(media);  // Använd relationen till Media istället för mediaId
             rating.setThumbsUp(thumbsUp);
         }
 

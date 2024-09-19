@@ -2,13 +2,15 @@ package com.example.krang.services;
 
 import com.example.krang.entities.Album;
 import com.example.krang.entities.Media;
+import com.example.krang.repository.AlbumRepository;
 import com.example.krang.repository.MediaRepository;
+import com.example.krang.services.MediaService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -18,14 +20,14 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)  // Använd MockitoExtension istället för SpringBootTest
 public class MediaServiceTest {
 
     @Mock
     private MediaRepository mediaRepository;
 
-    //@Mock
-    //private AlbumService albumService;
+    @Mock
+    private AlbumRepository albumRepository;
 
     @InjectMocks
     private MediaService mediaService;
@@ -35,8 +37,6 @@ public class MediaServiceTest {
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.openMocks(this);
-
         // Skapa ett exempelalbum för testning
         album = new Album();
         album.setId(1L);
@@ -67,6 +67,9 @@ public class MediaServiceTest {
 
     @Test
     public void testCreateMedia() {
+        // Simulera ett giltigt album finns i databasen
+        when(albumRepository.findById(1L)).thenReturn(java.util.Optional.of(album));
+
         // Simulera att vi sparar ett mediaobjekt
         when(mediaRepository.save(any(Media.class))).thenReturn(media);
 
@@ -80,6 +83,18 @@ public class MediaServiceTest {
     }
 
     @Test
+    public void testCreateMedia_WithInvalidAlbum() {
+        // Simulera ett ogiltigt album
+        when(albumRepository.findById(anyLong())).thenReturn(java.util.Optional.empty());
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            mediaService.createMedia(media);
+        });
+
+        assertEquals("Invalid album ID: 1", exception.getMessage());
+    }
+
+    @Test
     public void testGetMediaByType() {
         // Simulera att vi hämtar media baserat på dess typ
         List<Media> mediaList = Arrays.asList(media);
@@ -89,18 +104,6 @@ public class MediaServiceTest {
         List<Media> result = mediaService.getMediaByType("music");
         assertEquals(1, result.size());
         assertEquals("Test Media", result.get(0).getTitle());
-    }
-
-    @Test
-    public void testCreateMedia_WithInvalidAlbum() {
-        // Simulera ett ogiltigt album
-        media.setAlbum(null);
-
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            mediaService.createMedia(media);
-        });
-
-        assertEquals("Invalid album", exception.getMessage());
     }
 
     @Test

@@ -44,4 +44,11 @@ public class MediaController {
         List<Media> mediaList = mediaService.getMediaByArtist(artistName);
         return new ResponseEntity<>(mediaList, HttpStatus.OK);
     }
+
+    // Hämta media baserat på ID
+    @GetMapping("/{id}")
+    public ResponseEntity<Media> getMediaById(@PathVariable Long id) {
+        Media media = mediaService.findMediaById(id);
+        return ResponseEntity.ok(media);
+    }
 }
