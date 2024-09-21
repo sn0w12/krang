@@ -1,8 +1,6 @@
 package com.example.krang.entities;
 
 import jakarta.persistence.*;
-import org.springframework.data.annotation.Id;
-
 import java.time.LocalDateTime;
 
 @Entity
@@ -10,7 +8,6 @@ import java.time.LocalDateTime;
 public class User {
 
     @jakarta.persistence.Id
-    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -30,15 +27,12 @@ public class User {
     private LocalDateTime updatedAt;
 
     // Konstruktorer
-    public User() {
-    }
+    public User() {}
 
     public User(String username, String email, String password) {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
     }
 
     // Getters och Setters
@@ -90,11 +84,15 @@ public class User {
         this.updatedAt = updatedAt;
     }
 
-    // Metod för att uppdatera updated_at när en användarprofil uppdateras
+    // Metod för att uppdatera created_at och updated_at
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
     @PreUpdate
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
-
-
 }

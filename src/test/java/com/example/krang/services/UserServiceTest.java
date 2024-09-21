@@ -4,79 +4,141 @@ import com.example.krang.entities.User;
 import com.example.krang.exceptions.ResourceNotFoundException;
 import com.example.krang.exceptions.UserAlreadyExistsException;
 import com.example.krang.repository.UserRepository;
-import com.example.krang.services.UserService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
+import java.util.Optional;
 
-@SpringBootTest
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 public class UserServiceTest {
 
-    @Autowired
+    @InjectMocks
     private UserService userService;
 
-    @MockBean
+    @Mock
     private UserRepository userRepository;
 
-    @MockBean
+    @Mock
     private PasswordEncoder passwordEncoder;
 
-    // Testar skapandet av en användare
+    private User user;
+
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+        user = new User();
+        user.setId(1L);
+        user.setUsername("TestUser");
+        user.setEmail("test@example.com");
+        user.setPassword("password123");
+    }
+
     @Test
     public void testCreateUser_Success() {
-        User user = new User("johndoe", "johndoe@example.com", "securepassword");
-
-        // Mockar att användarnamnet och e-posten inte finns i databasen
-        Mockito.when(userRepository.existsByUsernameOrEmail("johndoe", "johndoe@example.com")).thenReturn(false);
-
-        // Mockar lösenordskryptering
-        Mockito.when(passwordEncoder.encode("securepassword")).thenReturn("encryptedPassword");
-
-        // Mockar att användaren sparas i databasen
-        Mockito.when(userRepository.save(any(User.class))).thenReturn(user);
+        when(userRepository.existsByUsernameOrEmail(user.getUsername(), user.getEmail())).thenReturn(false);
+        when(passwordEncoder.encode(user.getPassword())).thenReturn("encryptedPassword");
+        when(userRepository.save(any(User.class))).thenReturn(user);
 
         User createdUser = userService.createUser(user);
-        assertEquals("johndoe", createdUser.getUsername());
-        assertEquals("encryptedPassword", createdUser.getPassword());
+
+        assertNotNull(createdUser);
+        assertEquals("TestUser", createdUser.getUsername());
+        assertEquals("test@example.com", createdUser.getEmail());
+        verify(userRepository, times(1)).save(any(User.class));
     }
 
-    // Testar undantag för när användarnamnet eller e-posten redan finns
     @Test
-    public void testCreateUser_UsernameOrEmailExists() {
-        User user = new User("johndoe", "johndoe@example.com", "securepassword");
+    public void testCreateUser_UserAlreadyExists() {
+        when(userRepository.existsByUsernameOrEmail(user.getUsername(), user.getEmail())).thenReturn(true);
 
-        // Mockar att användarnamnet eller e-posten redan finns
-        Mockito.when(userRepository.existsByUsernameOrEmail("johndoe", "johndoe@example.com")).thenReturn(true);
+        assertThrows(UserAlreadyExistsException.class, () -> {
+            userService.createUser(user);
+        });
 
-        // Förväntar att undantaget kastas
-        assertThrows(UserAlreadyExistsException.class, () -> userService.createUser(user));
+        verify(userRepository, never()).save(any(User.class));
     }
 
-    // Testar att hitta en användare via id
     @Test
     public void testFindById_Success() {
-        User user = new User("johndoe", "johndoe@example.com", "securepassword");
-
-        // Mockar att användaren hittas
-        Mockito.when(userRepository.findById(1L)).thenReturn(java.util.Optional.of(user));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
         User foundUser = userService.findById(1L);
-        assertEquals("johndoe", foundUser.getUsername());
+
+        assertNotNull(foundUser);
+        assertEquals("TestUser", foundUser.getUsername());
+        assertEquals("test@example.com", foundUser.getEmail());
+        verify(userRepository, times(1)).findById(1L);
     }
 
-    // Testar undantag för när användaren inte hittas
     @Test
-    public void testFindById_UserNotFound() {
-        // Mockar att användaren inte hittas
-        Mockito.when(userRepository.findById(1L)).thenReturn(java.util.Optional.empty());
+    public void testFindById_NotFound() {
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
-        // Förväntar att undantaget kastas
-        assertThrows(ResourceNotFoundException.class, () -> userService.findById(1L));
+        assertThrows(ResourceNotFoundException.class, () -> {
+            userService.findById(1L);
+        });
+
+        verify(userRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    public void testUpdateUser_Success() {
+        User updatedUser = new User();
+        updatedUser.setUsername("UpdatedUser");
+        updatedUser.setEmail("updated@example.com");
+        updatedUser.setPassword("newPassword");
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(passwordEncoder.encode(updatedUser.getPassword())).thenReturn("encryptedNewPassword");
+        when(userRepository.save(any(User.class))).thenReturn(updatedUser);
+
+        User result = userService.updateUser(1L, updatedUser);
+
+        assertNotNull(result);
+        assertEquals("UpdatedUser", result.getUsername());
+        assertEquals("updated@example.com", result.getEmail());
+        verify(userRepository, times(1)).save(any(User.class));
+    }
+
+    @Test
+    public void testUpdateUser_NotFound() {
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+
+        User updatedUser = new User();
+        updatedUser.setUsername("UpdatedUser");
+        updatedUser.setEmail("updated@example.com");
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+            userService.updateUser(1L, updatedUser);
+        });
+
+        verify(userRepository, times(1)).findById(1L);
+        verify(userRepository, never()).save(any(User.class));
+    }
+
+    @Test
+    public void testDeleteUser_Success() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+
+        userService.deleteUser(1L);
+
+        verify(userRepository, times(1)).delete(user);
+    }
+
+    @Test
+    public void testDeleteUser_NotFound() {
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+            userService.deleteUser(1L);
+        });
+
+        verify(userRepository, never()).delete(any(User.class));
     }
 }

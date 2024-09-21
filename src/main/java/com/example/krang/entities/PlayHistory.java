@@ -1,39 +1,37 @@
 package com.example.krang.entities;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "media_ratings")
-public class Rating {
+@Table(name = "play_history")
+public class PlayHistory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Relation till User
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    // Relation till Media
     @ManyToOne
     @JoinColumn(name = "media_id", nullable = false)
     private Media media;
 
-    @Column(name = "thumbs_up", nullable = false)
-    private boolean thumbsUp;  // True för tummen upp, false för tummen ner
+    @Column(name = "played_at", nullable = false)
+    private LocalDateTime playedAt;
 
-    // Standardkonstruktor
-    public Rating() {}
-
-    // Konstruktor för att skapa rating med alla fält
-    public Rating(User user, Media media, boolean thumbsUp) {
-        this.user = user;
-        this.media = media;
-        this.thumbsUp = thumbsUp;
+    public PlayHistory() {
     }
 
-    // Getters och Setters
+    public PlayHistory(User user, Media media) {
+        this.user = user;
+        this.media = media;
+        this.playedAt = LocalDateTime.now();
+    }
+
+    // Getters och setters
     public Long getId() {
         return id;
     }
@@ -58,11 +56,11 @@ public class Rating {
         this.media = media;
     }
 
-    public boolean isThumbsUp() {
-        return thumbsUp;
+    public LocalDateTime getPlayedAt() {
+        return playedAt;
     }
 
-    public void setThumbsUp(boolean thumbsUp) {
-        this.thumbsUp = thumbsUp;
+    public void setPlayedAt(LocalDateTime playedAt) {
+        this.playedAt = playedAt;
     }
 }
