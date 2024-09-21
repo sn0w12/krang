@@ -40,6 +40,6 @@ INSERT INTO media_genre (media_id, genre_id) VALUES
 -- Insert into media_artist link table
 INSERT INTO media_artist (media_id, artist_id) VALUES
                                                    (1, 1), -- 'Sultans of Swing' by 'Mark Knofler'
-                                                   (2, 2), -- 'The thrill is gone' by 'B.B King'
+                                                (2, 2), -- 'The thrill is gone' by 'B.B King'
                                                    (3, 3), -- 'The Modern Man' by 'Andrew Tate'
                                                    (4, 4); -- 'I feel it Coming' by 'The Weekend'
