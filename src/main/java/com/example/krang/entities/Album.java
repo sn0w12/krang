@@ -23,7 +23,8 @@ public class Album {
     private Artist artist;
 
     // Relation till Media (One-to-Many)
-    @OneToMany(mappedBy = "album")
+
+    @OneToMany(mappedBy = "album", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Media> mediaList;
 
     // Getters och Setters

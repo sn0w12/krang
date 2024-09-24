@@ -33,8 +33,8 @@ public class AlbumController {
     // Ta bort ett album
     @DeleteMapping("/{albumId}")
     public ResponseEntity<Void> deleteAlbum(@PathVariable Long albumId) {
-        albumService.deleteAlbum(albumId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+       albumService.deleteAlbum(albumId);
+       return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     // Hämta alla album

@@ -22,6 +22,7 @@ public class Media {
     // Relation till Album (Many-to-One)
     @ManyToOne
     @JoinColumn(name = "album_id")
+
     private Album album;
 
     public Media() {}

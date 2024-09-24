@@ -1,6 +1,8 @@
 package com.example.krang.entities;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "media_ratings")
@@ -16,8 +18,10 @@ public class Rating {
     private User user;
 
     // Relation till Media
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "media_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+
     private Media media;
 
     @Column(name = "thumbs_up", nullable = false)
