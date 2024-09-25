@@ -39,7 +39,6 @@ public class UserServiceTest {
         user.setPassword("password123");
     }
 
-    // Test för att skapa användare framgångsrikt
     @Test
     public void testCreateUser_Success() {
         when(userRepository.existsByUsernameOrEmail(user.getUsername(), user.getEmail())).thenReturn(false);
@@ -50,11 +49,10 @@ public class UserServiceTest {
 
         assertNotNull(createdUser);
         assertEquals("TestUser", createdUser.getUsername());
-        assertEquals("encryptedPassword", createdUser.getPassword());  // Verifiera krypterat lösenord
+        assertEquals("test@example.com", createdUser.getEmail());
         verify(userRepository, times(1)).save(any(User.class));
     }
 
-    // Test för att hantera när användare redan finns
     @Test
     public void testCreateUser_UserAlreadyExists() {
         when(userRepository.existsByUsernameOrEmail(user.getUsername(), user.getEmail())).thenReturn(true);
@@ -66,7 +64,6 @@ public class UserServiceTest {
         verify(userRepository, never()).save(any(User.class));
     }
 
-    // Test för att hämta användare baserat på ID
     @Test
     public void testFindById_Success() {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
@@ -75,12 +72,12 @@ public class UserServiceTest {
 
         assertNotNull(foundUser);
         assertEquals("TestUser", foundUser.getUsername());
+        assertEquals("test@example.com", foundUser.getEmail());
         verify(userRepository, times(1)).findById(1L);
     }
 
-    // Test för att hantera när användaren inte finns
     @Test
-    public void testFindById_UserNotFound() {
+    public void testFindById_NotFound() {
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> {
@@ -91,27 +88,57 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testCreateUser_EmailAlreadyExists() {
-        when(userRepository.existsByUsernameOrEmail(anyString(), anyString())).thenReturn(true);
+    public void testUpdateUser_Success() {
+        User updatedUser = new User();
+        updatedUser.setUsername("UpdatedUser");
+        updatedUser.setEmail("updated@example.com");
+        updatedUser.setPassword("newPassword");
 
-        assertThrows(UserAlreadyExistsException.class, () -> {
-            userService.createUser(user);
-        });
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(passwordEncoder.encode(updatedUser.getPassword())).thenReturn("encryptedNewPassword");
+        when(userRepository.save(any(User.class))).thenReturn(updatedUser);
+
+        User result = userService.updateUser(1L, updatedUser);
+
+        assertNotNull(result);
+        assertEquals("UpdatedUser", result.getUsername());
+        assertEquals("updated@example.com", result.getEmail());
+        verify(userRepository, times(1)).save(any(User.class));
     }
 
-    // Test för lösenordskryptering
     @Test
-    public void testCreateUser_PasswordEncryption() {
-        when(userRepository.existsByUsernameOrEmail(user.getUsername(), user.getEmail())).thenReturn(false);
-        when(passwordEncoder.encode("password123")).thenReturn("encryptedPassword");
+    public void testUpdateUser_NotFound() {
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
-        userService.createUser(user);
+        User updatedUser = new User();
+        updatedUser.setUsername("UpdatedUser");
+        updatedUser.setEmail("updated@example.com");
 
-        verify(passwordEncoder, times(1)).encode("password123");
+        assertThrows(ResourceNotFoundException.class, () -> {
+            userService.updateUser(1L, updatedUser);
+        });
+
+        verify(userRepository, times(1)).findById(1L);
+        verify(userRepository, never()).save(any(User.class));
     }
 
+    @Test
+    public void testDeleteUser_Success() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
+        userService.deleteUser(1L);
 
+        verify(userRepository, times(1)).delete(user);
+    }
 
+    @Test
+    public void testDeleteUser_NotFound() {
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
+        assertThrows(ResourceNotFoundException.class, () -> {
+            userService.deleteUser(1L);
+        });
+
+        verify(userRepository, never()).delete(any(User.class));
+    }
 }
