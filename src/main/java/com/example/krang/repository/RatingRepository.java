@@ -1,12 +1,13 @@
 package com.example.krang.repository;
 
-import com.example.krang.entities.Rating;
-import com.example.krang.entities.User;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-import java.util.Optional;
+import com.example.krang.entities.Rating;
+import com.example.krang.entities.User;
 
 @Repository
 public interface RatingRepository extends JpaRepository<Rating, Long> {
@@ -15,5 +16,5 @@ public interface RatingRepository extends JpaRepository<Rating, Long> {
     Optional<Rating> findByUserIdAndMediaId(Long userId, Long mediaId);
 
     // Hämta en lista med ratings baserat på användare och typ av rating (tummen upp eller ner)
-    List<Rating> findByUserAndRating(User user, String rating);
+    List<Rating> findByUserAndThumbsUp(User user, Boolean thumbsUp);
 }

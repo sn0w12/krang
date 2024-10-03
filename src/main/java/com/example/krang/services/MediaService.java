@@ -1,14 +1,15 @@
 package com.example.krang.services;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.example.krang.entities.Album;
 import com.example.krang.entities.Media;
 import com.example.krang.exceptions.ResourceNotFoundException;
 import com.example.krang.repository.AlbumRepository;
 import com.example.krang.repository.MediaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class MediaService {
@@ -40,7 +41,7 @@ public class MediaService {
 
     // Hämta media baserat på artist
     public List<Media> getMediaByArtist(String artistName) {
-        return mediaRepository.findByArtist(artistName);
+        return mediaRepository.findByArtist_Name(artistName);
     }
 
     // Hämta media baserat på ID

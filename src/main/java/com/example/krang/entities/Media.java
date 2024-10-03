@@ -1,8 +1,20 @@
 package com.example.krang.entities;
 
-import jakarta.persistence.*;
 import java.util.Date;
-import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 @Entity
 @Table(name = "media", schema = "KRANG")
@@ -12,28 +24,34 @@ public class Media {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String title;
+
+    @Column(name = "genre")
     private String genre;
-    private String mediaType; // music, pod, video, etc.
-    private String artist;
+
+    @Column(nullable = false)
+    private String mediaType;
+
+    @ManyToOne
+    @JoinColumn(name = "artist_id")
+    @JsonIgnore
+    private Artist artist;
+
+    @Temporal(TemporalType.DATE)
+    @Column(nullable = false)
     private Date releaseDate;
+
+    @Column(nullable = false)
     private String streamUrl;
 
     // Relation till Album (Many-to-One)
     @ManyToOne
     @JoinColumn(name = "album_id")
+    @JsonBackReference
     private Album album;
 
     public Media() {}
-
-    public Media(String title, String genre, String mediaType, String artist, Date releaseDate, String streamUrl) {
-        this.title = title;
-        this.genre = genre;
-        this.mediaType = mediaType;
-        this.artist = artist;
-        this.releaseDate = releaseDate;
-        this.streamUrl = streamUrl;
-    }
 
     // Getters och Setters
     public Long getId() {
@@ -68,11 +86,11 @@ public class Media {
         this.mediaType = mediaType;
     }
 
-    public String getArtist() {
+    public Artist getArtist() {
         return artist;
     }
 
-    public void setArtist(String artist) {
+    public void setArtist(Artist artist) {
         this.artist = artist;
     }
 

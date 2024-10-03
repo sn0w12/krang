@@ -1,18 +1,19 @@
 package com.example.krang.services;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.example.krang.entities.Media;
 import com.example.krang.entities.PlayHistory;
 import com.example.krang.entities.User;
 import com.example.krang.repository.MediaRepository;
 import com.example.krang.repository.PlayHistoryRepository;
 import com.example.krang.repository.RatingRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 public class RecommendationService {
@@ -51,7 +52,7 @@ public class RecommendationService {
                 .toList();
 
         // Hämta media som användaren har gett tumme ner
-        List<Long> dislikedMediaIds = ratingRepository.findByUserAndRating(user, "down")
+        List<Long> dislikedMediaIds = ratingRepository.findByUserAndThumbsUp(user, false)
                 .stream()
                 .map(r -> r.getMedia().getId())
                 .toList();

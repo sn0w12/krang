@@ -1,7 +1,19 @@
 package com.example.krang.entities;
 
-import jakarta.persistence.*;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "album", schema = "KRANG")
@@ -20,10 +32,12 @@ public class Album {
     // Relation till Artist (Many-to-One)
     @ManyToOne
     @JoinColumn(name = "artist_id")
+    @JsonManagedReference
     private Artist artist;
 
     // Relation till Media (One-to-Many)
     @OneToMany(mappedBy = "album")
+    @JsonIgnore
     private List<Media> mediaList;
 
     // Getters och Setters
