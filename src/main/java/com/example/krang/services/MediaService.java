@@ -6,9 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.krang.entities.Album;
+import com.example.krang.entities.Artist;
 import com.example.krang.entities.Media;
 import com.example.krang.exceptions.ResourceNotFoundException;
 import com.example.krang.repository.AlbumRepository;
+import com.example.krang.repository.ArtistRepository;
 import com.example.krang.repository.MediaRepository;
 
 @Service
@@ -20,6 +22,9 @@ public class MediaService {
     @Autowired
     private AlbumRepository albumRepository;
 
+    @Autowired
+    private ArtistRepository artistRepository;
+
     // Hämta all media
     public List<Media> getAllMedia() {
         return mediaRepository.findAll();
@@ -27,10 +32,17 @@ public class MediaService {
 
     // Skapa media med ett album
     public Media createMedia(Media media) {
-        Long albumId = media.getAlbum().getId();
-        Album album = albumRepository.findById(albumId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid album ID: " + albumId));
+        // Fetch artist and album by their IDs
+        Artist artist = artistRepository.findById(media.getArtist().getId())
+                .orElseThrow(() -> new RuntimeException("Artist not found"));
+        Album album = albumRepository.findById(media.getAlbum().getId())
+                .orElseThrow(() -> new RuntimeException("Album not found"));
+
+        // Set the artist and album to the media object
+        media.setArtist(artist);
         media.setAlbum(album);
+
+        // Save media
         return mediaRepository.save(media);
     }
 

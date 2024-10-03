@@ -2,8 +2,8 @@ package com.example.krang.entities;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,6 +17,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "album", schema = "KRANG")
+@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
 public class Album {
 
     @Id
@@ -32,12 +33,10 @@ public class Album {
     // Relation till Artist (Many-to-One)
     @ManyToOne
     @JoinColumn(name = "artist_id")
-    @JsonManagedReference
     private Artist artist;
 
     // Relation till Media (One-to-Many)
     @OneToMany(mappedBy = "album")
-    @JsonIgnore
     private List<Media> mediaList;
 
     // Getters och Setters

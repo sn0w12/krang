@@ -2,8 +2,8 @@ package com.example.krang.entities;
 
 import java.util.Date;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,6 +18,7 @@ import jakarta.persistence.TemporalType;
 
 @Entity
 @Table(name = "media", schema = "KRANG")
+@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
 public class Media {
 
     @Id
@@ -35,7 +36,6 @@ public class Media {
 
     @ManyToOne
     @JoinColumn(name = "artist_id")
-    @JsonIgnore
     private Artist artist;
 
     @Temporal(TemporalType.DATE)
@@ -48,7 +48,6 @@ public class Media {
     // Relation till Album (Many-to-One)
     @ManyToOne
     @JoinColumn(name = "album_id")
-    @JsonBackReference
     private Album album;
 
     public Media() {}

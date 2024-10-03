@@ -3,7 +3,8 @@ package com.example.krang.entities;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -16,6 +17,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "artist", schema = "KRANG")
+@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
 public class Artist {
 
     @Id
@@ -27,12 +29,10 @@ public class Artist {
 
     // En artist kan ha många album
     @OneToMany(mappedBy = "artist", cascade = CascadeType.ALL)
-    @JsonIgnore
     private List<Album> albums = new ArrayList<>();
 
     // En artist kan ha många mediaobjekt
     @OneToMany(mappedBy = "artist", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
     private List<Media> mediaItems = new ArrayList<>();
 
     // Getters och Setters
