@@ -28,7 +28,9 @@ public class Artist {
     private String name;
 
     // En artist kan ha många album
-    @OneToMany(mappedBy = "artist", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "artist", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Album> albums = new ArrayList<>();
+
     private List<Album> albums = new ArrayList<>();
 
     // En artist kan ha många mediaobjekt
