@@ -65,8 +65,10 @@ public class AlbumService {
 
     // Ta bort ett album
     public void deleteAlbum(Long albumId) {
-        Album album = albumRepository.findById(albumId)
-                .orElseThrow(() -> new ResourceNotFoundException("Album not found with id: " + albumId));
-        albumRepository.delete(album);
+        if(!albumRepository.existsById(albumId)){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find and delete album by id " + albumId);
+        }
+        albumRepository.deleteById(albumId);
+
     }
 }
