@@ -18,9 +18,13 @@ public class AlbumController {
 
     // Skapa ett nytt album
     @PostMapping("/create")
-    public ResponseEntity<Album> createAlbum(@RequestParam String title, @RequestParam String genre, @RequestParam Long artistId) {
-        Album album = albumService.createAlbum(title, genre, artistId);
-        return new ResponseEntity<>(album, HttpStatus.CREATED);
+    public ResponseEntity<Album> createAlbum(@RequestBody Album album) {
+        if (album.getTitle() == null || album.getReleaseYear() <= 0 || album.getArtist() == null || album.getArtist().getId() == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        Album createdAlbum = albumService.createAlbum(album.getTitle(), album.getReleaseYear(), album.getArtist().getId());
+        return new ResponseEntity<>(createdAlbum, HttpStatus.CREATED);
     }
 
     // Lägg till media till ett album
