@@ -42,12 +42,18 @@ public class AlbumService {
     }
 
     // Skapa ett nytt album
-    public Album createAlbum(String title, String genre, Long artistId) {
+    public Album createAlbum(String title, int releaseYear, Long artistId) {
+        // find the artist by id or throw exception if not found
         Artist artist = artistRepository.findById(artistId)
                 .orElseThrow(() -> new ResourceNotFoundException("Artist not found with id: " + artistId));
+
+        // create a new album instance
         Album album = new Album();
         album.setTitle(title);
-        album.setArtist(artist);  // Koppla albumet till artist
+        album.setReleaseYear(releaseYear);
+        album.setArtist(artist); // associate with the artist
+
+        // Save the album in the database
         return albumRepository.save(album);
     }
 
